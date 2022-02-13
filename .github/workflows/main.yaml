@@ -91,15 +91,12 @@ jobs:
           app_version: ${{ env.VERSION }}
           chart_version: ${{ env.VERSION }}
 
-      - name: Wait for helm to publish
-        run: sleep 5s
-        shell: bash
-
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
         with:
           exec: |
             helm repo add bullyrooks https://bullyrooks.github.io/helm-charts/
+            sleep 5s
             helm repo update
             echo "helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}"
             helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}

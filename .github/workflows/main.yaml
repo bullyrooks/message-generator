@@ -91,6 +91,10 @@ jobs:
           app_version: ${{ env.VERSION }}
           chart_version: ${{ env.VERSION }}
 
+      - name: Sleep for 2 seconds waiting for helm to publish
+        run: sleep 2s
+        shell: bash
+
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
         with:

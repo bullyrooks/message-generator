@@ -96,7 +96,7 @@ jobs:
         with:
           exec: |
             helm repo add bullyrooks https://bullyrooks.github.io/helm-charts/
-            sleep 20s
+            sleep 40s
             helm repo update
             echo "helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}"
             helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}

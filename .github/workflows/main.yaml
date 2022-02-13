@@ -102,5 +102,5 @@ jobs:
             helm repo add bullyrooks https://bullyrooks.github.io/helm-charts/
             helm repo update
             echo "helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}"
-            helm upgrade message-generator bullyrooks/message-generator --install
+            helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'

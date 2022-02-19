@@ -1,6 +1,7 @@
 spring:
   application:
     name: message-generator
+
 management:
   endpoints:
     web:
@@ -18,3 +19,7 @@ management:
       enabled: true
 server:
   port: 8081
+logging:
+  level:
+    root: INFO
+    com.bullyrooks: DEBUG

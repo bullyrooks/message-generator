@@ -37,6 +37,11 @@ spec:
             - name: http
               containerPort: {{ .Values.port.containerPort }}
               protocol: TCP
+          env:
+          - name: OTEL_SERVICE_NAME
+            value: {{ include "message-generator.fullname" . }}
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://logzio-otel-traces:4317"
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness

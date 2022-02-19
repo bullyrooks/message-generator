@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 @Aspect
 @Component
 @Slf4j
+@Profile("!test")
 public class LoggingAspect {
 
     ObjectMapper om = new ObjectMapper();

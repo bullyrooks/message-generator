@@ -13,9 +13,6 @@
         <token>UaRKfHWNbOJuAIuvKjuKXWbMNuaGzNUP</token>
         <logzioUrl>https://listener.logz.io:8071</logzioUrl>
         <logzioType>message-generator</logzioType>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
     </appender>
     <root level="info">
         <appender-ref ref="CONSOLE"/>

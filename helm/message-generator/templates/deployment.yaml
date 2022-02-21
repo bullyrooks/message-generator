@@ -42,16 +42,26 @@ spec:
             value: {{ include "message-generator.fullname" . }}
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: "http://logzio-otel-traces:4317"
+          - name: LOGZIO_LOGGER_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: logzio-secrets
+                key: LOGZIO_LOGGER_TOKEN
+          - name: LOGZIO_METRICS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: logzio-secrets
+                key: LOGZIO_METRICS_TOKEN
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8081
-            initialDelaySeconds: 15
+            initialDelaySeconds: 120
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8081
-            initialDelaySeconds: 15
+            initialDelaySeconds: 120
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

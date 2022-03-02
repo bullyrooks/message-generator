@@ -29,3 +29,8 @@ logzio:
     url: https://listener.logz.io:8053
     registry:
       mock: false
+
+pactbroker:
+  host: https://bullyrooks.pactflow.io
+  auth:
+    token:

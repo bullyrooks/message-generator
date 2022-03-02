@@ -1,4 +1,0 @@
-logzio:
-  metrics:
-    registry:
-      mock: true

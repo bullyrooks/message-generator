@@ -21,6 +21,7 @@
         <log4j2.version>2.17.1</log4j2.version>
         <logzio-logback-appender.version>v1.0.25</logzio-logback-appender.version>
         <micrometer-registry-logzio.version>1.0.2</micrometer-registry-logzio.version>
+        <pact.version>4.3.2</pact.version>
     </properties>
     <dependencies>
         <dependency>
@@ -87,6 +88,18 @@
             <artifactId>micrometer-registry-logzio</artifactId>
             <version>${micrometer-registry-logzio.version}</version>
         </dependency>
+
+        <!-- Contract Testing -->
+        <dependency>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>junit5</artifactId>
+            <version>${pact.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>au.com.dius.pact.provider</groupId>
+            <artifactId>junit5spring</artifactId>
+            <version>${pact.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -101,6 +114,17 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>au.com.dius.pact.provider</groupId>
+                <artifactId>maven</artifactId>
+                <version>4.3.4</version>
+                <configuration>
+                    <pactBrokerUrl>${env.PACTFLOW_URL}</pactBrokerUrl>
+                    <pactBrokerToken>${env.PACTFLOW_TOKEN}</pactBrokerToken>
+                    <projectVersion>${env.PACT_PUBLISH_CONSUMER_VERSION}</projectVersion>
+                    <pactBrokerAuthenticationScheme>Bearer</pactBrokerAuthenticationScheme>
                 </configuration>
             </plugin>
         </plugins>

@@ -7,7 +7,9 @@ import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
 import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
 import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider;
+import com.bullyrooks.messagegenerator.config.ContractTest;
 import com.bullyrooks.messagegenerator.service.MessageService;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
 
-@Provider(MessageControllerContractTest.PROVIDER)
+@Provider(MessageControllerContractIT.PROVIDER)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@PactBroker(consumerVersionSelectors={
 //        @VersionSelector(tag = "placeholder-pact-matrix-mapping")})
@@ -28,7 +30,8 @@ import org.springframework.boot.web.server.LocalServerPort;
         host = "bullyrooks.pactflow.io", scheme = "https",
         authentication = @PactBrokerAuth(token = "${pactbroker.auth.token}"))
 @AutoConfigureMockMvc
-public class MessageControllerContractTest {
+@Category(ContractTest.class)
+public class MessageControllerContractIT {
     final static String PROVIDER = "message-generator";
     @LocalServerPort
     private int port;

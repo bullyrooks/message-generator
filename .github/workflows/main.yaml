@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+env:
+  PACTFLOW_URL: https://bullyrooks.pactflow.io
+  PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
 
 jobs:
   build:
@@ -20,8 +23,11 @@ jobs:
           distribution: 'adopt'
           cache: maven
 
-      - name: Build with Maven
+      - name: Maven Tests
         run: ./mvnw -B test
+
+      - name: Maven Contract Tests
+        run: ./mvnw -B verify -Pcontract
 
       - name: Bump version
         run: |
@@ -31,6 +37,11 @@ jobs:
           wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
           echo "VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)"
           echo "VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)" >> $GITHUB_ENV
+          echo "PACT_PUBLISH_CONSUMER_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "PACT_PUBLISH_CONSUMER_BRANCHNAME=main" >> $GITHUB_ENV
+
+      - name: Verify Contract
+        run: ./mvnw pact:verify
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -90,6 +101,9 @@ jobs:
           branch: gh-charts
           app_version: ${{ env.VERSION }}
           chart_version: ${{ env.VERSION }}
+
+      - name: Pact Can-i-deploy
+        run: ./mvnw pact:can-i-deploy
 
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2

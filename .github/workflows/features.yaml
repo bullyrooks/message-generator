@@ -6,7 +6,8 @@ on:
       - main
 env:
   PACTFLOW_URL: https://bullyrooks.pactflow.io
-  PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
+  PACTFLOW_TOKEN: ${{secrets.PACTFLOW _TOKEN}}
+  pactbroker.host: bullyrooks.pactflow.io
 
 jobs:
   build:

@@ -27,8 +27,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 /* Placeholder configs for connecting to Pactflow */
 @PactBroker(
-        host = "bullyrooks.pactflow.io", scheme = "https",
-        authentication = @PactBrokerAuth(token = "${pactbroker.auth.token}"))
+        authentication = @PactBrokerAuth(token = "${PACTFLOW_TOKEN}"))
 @AutoConfigureMockMvc
 @Category(ContractTest.class)
 public class MessageControllerContractIT {

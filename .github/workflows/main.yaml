@@ -7,6 +7,7 @@ on:
 env:
   PACTFLOW_URL: https://bullyrooks.pactflow.io
   PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
+  PACTBROKER_HOST: bullyrooks.pactflow.io
 
 jobs:
   build:
@@ -27,7 +28,7 @@ jobs:
         run: ./mvnw -B test
 
       - name: Maven Contract Tests
-        run: ./mvnw -B verify -Pcontract
+        run: ./mvnw -B verify -Pcontract -Dpactbroker.host=${{env.PACTBROKER_HOST}}
 
       - name: Bump version
         run: |

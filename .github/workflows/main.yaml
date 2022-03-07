@@ -43,7 +43,7 @@ jobs:
           -Dpactbroker.host=${{env.PACTBROKER_HOST}} \
           -Dpact.verifier.publishResults=true \
           -Dpact.provider.version=${{env.VERSON}} \
-          -Dpact.provider.branch=main
+          -Dpact.provider.branch=main \
           -Dpact.provider.tag=okteto
 
       - name: Set up Docker Buildx

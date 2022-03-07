@@ -7,7 +7,6 @@ import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
 import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
 import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider;
-import com.bullyrooks.messagegenerator.config.ContractTest;
 import com.bullyrooks.messagegenerator.service.MessageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

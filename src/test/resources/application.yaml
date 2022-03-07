@@ -2,7 +2,3 @@ logzio:
   metrics:
     registry:
       mock: true
-pactbroker:
-  host: https://bullyrooks.pactflow.io
-  auth:
-    token:

@@ -30,7 +30,3 @@ logzio:
     registry:
       mock: false
 
-pactbroker:
-  host: https://bullyrooks.pactflow.io
-  auth:
-    token:

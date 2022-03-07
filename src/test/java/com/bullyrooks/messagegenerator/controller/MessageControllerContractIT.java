@@ -9,8 +9,8 @@ import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
 import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider;
 import com.bullyrooks.messagegenerator.config.ContractTest;
 import com.bullyrooks.messagegenerator.service.MessageService;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -22,14 +22,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 @Provider(MessageControllerContractIT.PROVIDER)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@PactBroker(consumerVersionSelectors={
-//        @VersionSelector(tag = "placeholder-pact-matrix-mapping")})
-
-/* Placeholder configs for connecting to Pactflow */
 @PactBroker(
         authentication = @PactBrokerAuth(token = "${PACTFLOW_TOKEN}"))
 @AutoConfigureMockMvc
-@Category(ContractTest.class)
+@Tag("ContractTest")
 public class MessageControllerContractIT {
     final static String PROVIDER = "message-generator";
     @LocalServerPort

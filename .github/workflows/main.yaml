@@ -42,7 +42,7 @@ jobs:
           ./mvnw -B verify -Pcontract \
           -Dpactbroker.host=${{env.PACTBROKER_HOST}} \
           -Dpact.verifier.publishResults=true \
-          -Dpact.provider.version=${{env.VERSON}} \
+          -Dpact.provider.version=${{env.VERSION}} \
           -Dpact.provider.branch=main \
           -Dpact.provider.tag=okteto
 

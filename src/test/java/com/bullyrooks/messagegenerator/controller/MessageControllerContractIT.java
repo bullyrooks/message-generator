@@ -2,10 +2,12 @@ package com.bullyrooks.messagegenerator.controller;
 
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
+import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify;
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
 import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
+import au.com.dius.pact.provider.junitsupport.loader.VersionSelector;
 import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider;
 import com.bullyrooks.messagegenerator.service.MessageService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,26 +24,35 @@ import org.springframework.boot.web.server.LocalServerPort;
 @Provider(MessageControllerContractIT.PROVIDER)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @PactBroker(
-        authentication = @PactBrokerAuth(token = "${PACTFLOW_TOKEN}"))
+        authentication = @PactBrokerAuth(token = "${PACTFLOW_TOKEN}"),
+        consumerVersionSelectors = {
+                @VersionSelector(tag = "${PACT_CONSUMER_SELECTOR_TAG:okteto}")
+        }
+)
+
 @AutoConfigureMockMvc
 @Tag("ContractTest")
+@IgnoreNoPactsToVerify
 public class MessageControllerContractIT {
     final static String PROVIDER = "message-generator";
+    @MockBean
+    MessageService service;
     @LocalServerPort
     private int port;
 
-    @MockBean
-    MessageService service;
-
     @BeforeEach
     void setup(PactVerificationContext context) {
-        context.setTarget(new HttpTestTarget("localhost", port));
+        if (null!=context) {
+            context.setTarget(new HttpTestTarget("localhost", port));
+        }
     }
 
     @TestTemplate
     @ExtendWith(PactVerificationSpringProvider.class)
     void pactVerificationTestTemplate(PactVerificationContext context) {
-        context.verifyInteraction();
+        if (null!=context) {
+            context.verifyInteraction();
+        }
     }
 
 

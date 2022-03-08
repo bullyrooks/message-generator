@@ -44,7 +44,8 @@ jobs:
           -Dpact.verifier.publishResults=true \
           -Dpact.provider.version=${{env.VERSION}} \
           -Dpact.provider.branch=main \
-          -Dpact.provider.tag=okteto
+          -Dpact.provider.tag=okteto \
+          -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

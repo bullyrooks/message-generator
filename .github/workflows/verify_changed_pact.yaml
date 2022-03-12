@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Get ENV
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/*/}" >> $GITHUB_ENV
       - name: Echo release version
         run: |
           echo $VERSION

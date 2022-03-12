@@ -71,6 +71,13 @@ jobs:
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
 
+      - name: Create Pact Version Tag
+        run: |
+          ./mvnw pact:create-version-tag \
+          -Dpacticipant=message-generator \
+          -DpacticipantVersion=${{ env.VERSION }} \
+          -Dtag=initial
+
       - name: Pact Can-i-deploy
         run: |
           ./mvnw pact:can-i-deploy \

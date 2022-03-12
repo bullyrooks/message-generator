@@ -20,11 +20,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: actions-ecosystem/action-release-label@v1
-        id: release-label
+
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
-        if: ${{ steps.release-label.outputs.level != null }}
 
       - name: Echo release version
         run: |

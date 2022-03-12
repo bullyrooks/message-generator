@@ -37,24 +37,16 @@ jobs:
           git config --global user.name "Actions"
           git fetch --tags
           wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
-          echo "BUMP_VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)" >> $GITHUB_ENV
-          echo ${{ env.BUMP_VERSION }}
+
         if: env.VERSION == ''
-      - name: Create tag
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ env.BUMP_VERSION }}',
-              sha: context.sha
-            })
-        if: env.VERSION == ''
-      - name: use bump version as version
+
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+
+      - name: get release version
         run: |
-          echo "VERSION=${{ env.BUMP_VERSION }}" >> $GITHUB_ENV
-          echo ${{ env.VERSION }}
+          echo "RELEASE_VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
+          echo ${{ env.RELEASE_VERSION }}
         if: env.VERSION == ''
 
       - name: Maven Tests

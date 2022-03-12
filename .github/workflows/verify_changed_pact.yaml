@@ -20,11 +20,16 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: little-core-labs/get-git-tag@v3.0.1
-        id: versiontag
+      - uses: actions-ecosystem/action-release-label@v1
+        id: release-label
+        if: ${{ github.event.pull_request.merged == true }}
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+        if: ${{ steps.release-label.outputs.level != null }}
+
       - name: Echo release version
         run: |
-          echo "RELEASE_VERSION=${{ env.GIT_TAG_NAME }}" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
           echo ${{ env.RELEASE_VERSION }}
       - name: Set up JDK 11
         uses: actions/setup-java@v2.5.0

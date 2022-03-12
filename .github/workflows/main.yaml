@@ -24,9 +24,16 @@ jobs:
           distribution: 'adopt'
           cache: maven
 
-      - name: Get ENV
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Echo release version
+      - name: find current version
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+
+      - name: get current version tag
+        run: |
+          echo "$VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
+          echo ${{ env.$VERSION }}
+
+      - name: Echo current version tag
         run: |
           echo $VERSION
           echo ${{ env.VERSION }}
@@ -37,16 +44,17 @@ jobs:
           git config --global user.name "Actions"
           git fetch --tags
           wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
-
         if: env.VERSION == ''
 
-      - uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
+      - name: get version tag after bump
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-bumped-tag
+        if: env.VERSION == ''
 
       - name: get release version
         run: |
-          echo "RELEASE_VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo ${{ env.RELEASE_VERSION }}
+          echo "VERSION=${{ steps.get-bumped-tag.outputs.tag }}" >> $GITHUB_ENV
+          echo ${{ env.VERSION }}
         if: env.VERSION == ''
 
       - name: Maven Tests

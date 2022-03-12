@@ -1,0 +1,36 @@
+name: Verify changed pact
+
+on:
+  repository_dispatch:
+    types:
+      - pact_changed
+
+env:
+  PACTFLOW_URL: https://bullyrooks.pactflow.io
+  PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
+  PACTBROKER_HOST: bullyrooks.pactflow.io
+  GIT_COMMIT: ${{ github.sha }}
+  GITHUB_REF: ${{ github.ref }}
+  PACT_URL: ${{ github.event.client_payload.pact_url }}
+
+jobs:
+  verify-changed-pact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2.5.0
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+      - name: Verify Contract Tests
+        run: |
+          ./mvnw -B verify -Pcontract \
+          -Dpactbroker.host=${{env.PACTBROKER_HOST}} \
+          -Dpact.verifier.publishResults=true \
+          -Dpact.provider.branch=main \
+          -Dpact.provider.tag=okteto \
+          -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto

@@ -46,6 +46,7 @@ jobs:
           -Dpact.provider.branch=main \
           -Dpact.provider.tag=okteto \
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
+        continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

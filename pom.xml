@@ -24,12 +24,20 @@
         <pact.version>4.3.5</pact.version>
         <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     </properties>
     <profiles>
         <profile>
             <id>contract</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <excludedGroups>UnitTest</excludedGroups>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${maven-failsafe-plugin.version}</version>
@@ -41,10 +49,8 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <groups>ContractTest</groups>
-                        </configuration>
                     </plugin>
+
                 </plugins>
             </build>
         </profile>

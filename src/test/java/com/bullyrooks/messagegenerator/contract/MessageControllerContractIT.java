@@ -1,4 +1,4 @@
-package com.bullyrooks.messagegenerator.controller;
+package com.bullyrooks.messagegenerator.contract;
 
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;

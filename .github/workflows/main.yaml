@@ -156,3 +156,10 @@ jobs:
             helm repo update
             helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
+
+      - name: Create Pact Version Tag
+        run: |
+          ./mvnw pact:create-version-tag \
+          -Dpacticipant=message-generator \
+          -DpacticipantVersion=${{ env.VERSION }} \
+          -Dtag=okteto

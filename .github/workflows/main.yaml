@@ -38,25 +38,6 @@ jobs:
           echo $VERSION
           echo ${{ env.VERSION }}
 
-      - name: Bump version
-        run: |
-          git config --global user.email "github+actions@gmail.com"
-          git config --global user.name "Actions"
-          git fetch --tags
-          wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
-        if: env.VERSION == ''
-
-      - name: get version tag after bump
-        uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-bumped-tag
-        if: env.VERSION == ''
-
-      - name: get release version
-        run: |
-          echo "VERSION=${{ steps.get-bumped-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo ${{ env.VERSION }}
-        if: env.VERSION == ''
-
       - name: Maven Tests
         run: ./mvnw -B test
 

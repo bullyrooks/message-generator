@@ -83,5 +83,5 @@ jobs:
           --to-environment=okteto \
           --branch=${{env.GIT_BRANCH}} 
           --version=${{ env.VERSION }}  \
-          --broker-base-url=${{ PACTFLOW_URL }} \
-          --broker-token=${{ PACTFLOW_TOKEN }}
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
+          --broker-token=${{ env.PACTFLOW_TOKEN }}

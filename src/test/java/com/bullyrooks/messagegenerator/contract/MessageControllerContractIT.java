@@ -66,6 +66,7 @@ public class MessageControllerContractIT {
         MessageModel dto = MessageModel.builder()
                 .message("All dwarfs are bastards in their father's eyes")
                 .generatedDate(Instant.parse("2022-03-07T18:37:54.124523300Z"))
+                .source("Game of Thrones")
                 .build();
         Mockito.when(service.getMessage()).thenReturn(dto);
         //@formatter:on

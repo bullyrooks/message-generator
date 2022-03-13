@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -47,5 +48,6 @@ public class MessageControllerTest {
         MessageResponseDTO response = result.getBody();
         log.info("Test message returned: {}",response.getMessage());
         assertTrue(StringUtils.isNotBlank(response.getMessage()));
+        assertNotNull(response.getGeneratedDate());
     }
 }

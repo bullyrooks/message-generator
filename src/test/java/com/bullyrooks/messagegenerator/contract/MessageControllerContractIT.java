@@ -9,7 +9,9 @@ import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
 import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
 import au.com.dius.pact.provider.junitsupport.loader.VersionSelector;
 import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider;
+import com.bullyrooks.messagegenerator.controller.dto.MessageResponseDTO;
 import com.bullyrooks.messagegenerator.service.MessageService;
+import com.bullyrooks.messagegenerator.service.model.MessageModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
@@ -19,6 +21,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
+
+import java.time.Instant;
 
 
 @Provider(MessageControllerContractIT.PROVIDER)
@@ -59,7 +63,11 @@ public class MessageControllerContractIT {
     @State("generator creates a message")
     public void shouldReturnMessage() {
         //@formatter:off
-        Mockito.when(service.getMessage()).thenReturn("All dwarfs are bastards in their father's eyes");
+        MessageModel dto = MessageModel.builder()
+                .message("All dwarfs are bastards in their father's eyes")
+                .generatedDate(Instant.parse("2022-03-07T18:37:54.124523300Z"))
+                .build();
+        Mockito.when(service.getMessage()).thenReturn(dto);
         //@formatter:on
     }
 }

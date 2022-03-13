@@ -1,4 +1,4 @@
-package com.bullyrooks.messagegenerator.controller.dto;
+package com.bullyrooks.messagegenerator.service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageResponseDTO {
+public class MessageModel {
 
     private String message;
     private Instant generatedDate;

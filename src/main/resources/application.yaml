@@ -29,3 +29,4 @@ logzio:
     url: https://listener.logz.io:8053
     registry:
       mock: false
+

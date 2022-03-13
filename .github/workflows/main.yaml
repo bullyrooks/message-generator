@@ -38,25 +38,6 @@ jobs:
           echo $VERSION
           echo ${{ env.VERSION }}
 
-      - name: Bump version
-        run: |
-          git config --global user.email "github+actions@gmail.com"
-          git config --global user.name "Actions"
-          git fetch --tags
-          wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
-        if: env.VERSION == ''
-
-      - name: get version tag after bump
-        uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-bumped-tag
-        if: env.VERSION == ''
-
-      - name: get release version
-        run: |
-          echo "VERSION=${{ steps.get-bumped-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo ${{ env.VERSION }}
-        if: env.VERSION == ''
-
       - name: Maven Tests
         run: ./mvnw -B test
 
@@ -80,11 +61,13 @@ jobs:
 
       - name: Pact Can-i-deploy
         run: |
-          ./mvnw pact:can-i-deploy \
-          -Dpacticipant=message-generator \
-          -DpacticipantVersion=${{ env.VERSION }} \
-          -DtoTag=okteto \
-          -Dallow-missing-dependency=true
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker can-i-deploy \
+          --pacticipant=message-generator  \
+          --to-environment=okteto \
+          --version=${{ env.VERSION }}  \
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
+          --broker-token=${{ env.PACTFLOW_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -157,9 +140,22 @@ jobs:
             helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
 
-      - name: Create Pact Version Tag
+      - name: Create Pact Release Record
         run: |
-          ./mvnw pact:create-version-tag \
-          -Dpacticipant=message-generator \
-          -DpacticipantVersion=${{ env.VERSION }} \
-          -Dtag=okteto
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker record-release \
+          --environment=okteto 
+          --pacticipant=message-generator \
+          --version=${{ env.VERSION }} \
+          --broker-base-url=${{ env.PACTFLOW_URL }} 
+          --broker-token=${{ env.PACTFLOW_TOKEN }}
+
+      - name: Create Pact Deployment Record
+        run: |
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker record-deployment \
+          --environment=okteto 
+          --pacticipant=message-generator \
+          --version=${{ env.VERSION }} \
+          --broker-base-url=${{ env.PACTFLOW_URL }} 
+          --broker-token=${{ env.PACTFLOW_TOKEN }}

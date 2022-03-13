@@ -48,5 +48,6 @@ public class MessageControllerTest {
         MessageResponseDTO response = result.getBody();
         log.info("Test message returned: {}",response.getMessage());
         assertTrue(StringUtils.isNotBlank(response.getMessage()));
+        assertNotNull(response.getGeneratedDate());
     }
 }

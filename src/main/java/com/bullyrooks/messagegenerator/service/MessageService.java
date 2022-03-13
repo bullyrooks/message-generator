@@ -6,6 +6,8 @@ import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @LoggingEnabled
 @Slf4j
@@ -15,6 +17,7 @@ public class MessageService {
     public MessageModel getMessage(){
         MessageModel model = MessageModel.builder()
                 .message(faker.gameOfThrones().quote())
+                .generatedDate(Instant.now())
                 .build();
 
         return model;

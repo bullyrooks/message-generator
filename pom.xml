@@ -121,6 +121,12 @@
             <version>${micrometer-registry-logzio.version}</version>
         </dependency>
 
+        <!-- dates -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!-- Contract Testing -->
         <dependency>
             <groupId>au.com.dius.pact.consumer</groupId>

@@ -60,6 +60,13 @@ jobs:
       - name: Maven Tests
         run: ./mvnw -B test
 
+      - name: Create Pact Version Tag
+        run: |
+          ./mvnw pact:create-version-tag \
+          -Dpacticipant=message-generator \
+          -DpacticipantVersion=${{ env.VERSION }} \
+          -Dtag=initial
+
       - name: Verify Contract Tests
         run: |
           ./mvnw -B verify -Pcontract \
@@ -70,13 +77,6 @@ jobs:
           -Dpact.provider.tag=okteto \
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
-
-      - name: Create Pact Version Tag
-        run: |
-          ./mvnw pact:create-version-tag \
-          -Dpacticipant=message-generator \
-          -DpacticipantVersion=${{ env.VERSION }} \
-          -Dtag=initial
 
       - name: Pact Can-i-deploy
         run: |

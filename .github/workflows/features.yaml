@@ -77,8 +77,11 @@ jobs:
 
       - name: Pact Can-i-deploy
         run: |
-          ./mvnw pact:can-i-deploy \
-          -Dpacticipant=message-generator \
-          -DpacticipantVersion=${{ env.VERSION }} \
-          -DtoTag=okteto \
-          -Dallow-missing-dependency=true
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker can-i-deploy \
+          --pacticipant=message-generator  \
+          --to-environment=okteto \
+          --branch=${{env.GIT_BRANCH}} 
+          --version=${{ env.VERSION }}  \
+          --broker-base-url=${{ PACTFLOW_URL }} \
+          --broker-token=${{ PACTFLOW_TOKEN }}

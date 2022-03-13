@@ -4,6 +4,7 @@ import com.bullyrooks.messagegenerator.controller.dto.MessageResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,11 +20,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
+@Tag("UnitTest")
 @AutoConfigureMockMvc
 public class MessageControllerTest {
     @LocalServerPort
@@ -45,5 +48,7 @@ public class MessageControllerTest {
         MessageResponseDTO response = result.getBody();
         log.info("Test message returned: {}",response.getMessage());
         assertTrue(StringUtils.isNotBlank(response.getMessage()));
+        assertNotNull(response.getGeneratedDate());
+        assertEquals("Game of Thrones", response.getSource());
     }
 }

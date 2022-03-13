@@ -49,5 +49,6 @@ public class MessageControllerTest {
         log.info("Test message returned: {}",response.getMessage());
         assertTrue(StringUtils.isNotBlank(response.getMessage()));
         assertNotNull(response.getGeneratedDate());
+        assertEquals("Game of Thrones", response.getSource());
     }
 }

@@ -18,6 +18,7 @@ public class MessageService {
         MessageModel model = MessageModel.builder()
                 .message(faker.gameOfThrones().quote())
                 .generatedDate(Instant.now())
+                .source("Game of Thrones")
                 .build();
 
         return model;

@@ -2,6 +2,7 @@ package com.bullyrooks.messagegenerator.controller;
 
 import com.bullyrooks.messagegenerator.config.LoggingEnabled;
 import com.bullyrooks.messagegenerator.controller.dto.MessageResponseDTO;
+import com.bullyrooks.messagegenerator.controller.mapper.MessageResponseDTOMapper;
 import com.bullyrooks.messagegenerator.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,6 @@ public class MessageController {
     @GetMapping("/message")
     public MessageResponseDTO getMessage(){
 
-        return MessageResponseDTO.builder()
-                .message(messageService.getMessage())
-                .build();
+        return MessageResponseDTOMapper.INSTANCE.modelToDTO(messageService.getMessage());
     }
 }

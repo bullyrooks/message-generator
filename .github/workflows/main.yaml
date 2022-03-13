@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+env:
+  PACTFLOW_URL: https://bullyrooks.pactflow.io
+  PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
+  PACTBROKER_HOST: bullyrooks.pactflow.io
 
 jobs:
   build:
@@ -20,8 +24,19 @@ jobs:
           distribution: 'adopt'
           cache: maven
 
-      - name: Build with Maven
-        run: ./mvnw -B test
+      - name: find current version
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+
+      - name: get current version tag
+        run: |
+          echo "VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
+          echo ${{ env.VERSION }}
+
+      - name: Echo current version tag
+        run: |
+          echo $VERSION
+          echo ${{ env.VERSION }}
 
       - name: Bump version
         run: |
@@ -29,8 +44,39 @@ jobs:
           git config --global user.name "Actions"
           git fetch --tags
           wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
-          echo "VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)"
           echo "VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)" >> $GITHUB_ENV
+          echo ${{ env.VERSION }}
+
+      - name: Maven Tests
+        run: ./mvnw -B test
+
+      - name: Create Pact Version Tag
+        run: |
+          ./mvnw pact:create-version-tag \
+          -Dpacticipant=message-generator \
+          -DpacticipantVersion=${{ env.VERSION }} \
+          -Dtag=initial
+
+      - name: Verify Contract Tests
+        run: |
+          ./mvnw -B verify -Pcontract \
+          -Dpactbroker.host=${{env.PACTBROKER_HOST}} \
+          -Dpact.verifier.publishResults=true \
+          -Dpact.provider.version=${{env.VERSION}} \
+          -Dpact.provider.branch=main \
+          -Dpact.provider.tag=okteto \
+          -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
+        continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
+
+      - name: Pact Can-i-deploy
+        run: |
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker can-i-deploy \
+          --pacticipant=message-generator  \
+          --to-environment=okteto \
+          --version=${{ env.VERSION }}  \
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
+          --broker-token=${{ env.PACTFLOW_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -102,3 +148,23 @@ jobs:
             helm repo update
             helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
+
+      - name: Create Pact Release Record
+        run: |
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker record-release \
+          --environment=okteto \
+          --pacticipant=message-generator \
+          --version=${{ env.VERSION }} \
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
+          --broker-token=${{ env.PACTFLOW_TOKEN }}
+
+      - name: Create Pact Deployment Record
+        run: |
+          docker run --rm pactfoundation/pact-cli:latest \
+          broker record-deployment \
+          --environment=okteto \
+          --pacticipant=message-generator \
+          --version=${{ env.VERSION }} \
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
+          --broker-token=${{ env.PACTFLOW_TOKEN }}

@@ -36,7 +36,7 @@ jobs:
           cache: maven
       - name: Verify Contract Tests
         run: |
-          ./mvnw -B verify -Pcontract \
+          ./mvnw -B verify -Pcontract -X \
           -Dpactbroker.host=${{env.PACTBROKER_HOST}} \
           -Dpact.verifier.publishResults=true \
           -Dpact.provider.version=${{ env.RELEASE_VERSION }} \

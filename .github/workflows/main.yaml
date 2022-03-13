@@ -147,7 +147,7 @@ jobs:
           --environment=okteto \
           --pacticipant=message-generator \
           --version=${{ env.VERSION }} \
-          --broker-base-url=${{ env.PACTFLOW_URL }} 
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}
 
       - name: Create Pact Deployment Record
@@ -157,5 +157,5 @@ jobs:
           --environment=okteto \
           --pacticipant=message-generator \
           --version=${{ env.VERSION }} \
-          --broker-base-url=${{ env.PACTFLOW_URL }} 
+          --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}

@@ -50,13 +50,6 @@ jobs:
       - name: Maven Tests
         run: ./mvnw -B test
 
-      - name: Create Pact Version Tag
-        run: |
-          ./mvnw pact:create-version-tag \
-          -Dpacticipant=message-generator \
-          -DpacticipantVersion=${{ env.VERSION }} \
-          -Dtag=initial
-
       - name: Verify Contract Tests
         run: |
           ./mvnw -B verify -Pcontract \

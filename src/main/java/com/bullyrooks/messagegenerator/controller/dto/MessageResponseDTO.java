@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class MessageResponseDTO {
 
     private String message;
+    private Instant generatedDate;
 }

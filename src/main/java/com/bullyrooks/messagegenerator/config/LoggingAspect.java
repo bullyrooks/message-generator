@@ -3,12 +3,14 @@ package com.bullyrooks.messagegenerator.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -22,7 +24,13 @@ import java.util.Map;
 @Profile("!test")
 public class LoggingAspect {
 
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om;
+
+    @Autowired
+    public LoggingAspect() {
+        om = new ObjectMapper()
+                .registerModule(new JavaTimeModule());
+    }
 
     @Pointcut("within(@com.bullyrooks.messagegenerator.config.LoggingEnabled *)")
     public void loggingEnabled() {

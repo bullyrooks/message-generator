@@ -42,4 +42,4 @@ jobs:
           -Dpact.provider.version=${{ env.RELEASE_VERSION }} \
           -Dpact.provider.branch=main \
           -Dpact.provider.tag=okteto \
-          -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
+          -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto,development

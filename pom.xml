@@ -24,7 +24,7 @@
         <pact.version>4.3.5</pact.version>
         <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+        <pact.maven.plugin.version>4.3.5</pact.maven.plugin.version>
     </properties>
     <profiles>
         <profile>
@@ -161,7 +161,7 @@
             <plugin>
                 <groupId>au.com.dius.pact.provider</groupId>
                 <artifactId>maven</artifactId>
-                <version>4.3.5</version>
+                <version>${pact.maven.plugin.version}</version>
                 <configuration>
                     <pactBrokerUrl>${env.PACTFLOW_URL}</pactBrokerUrl>
                     <pactBrokerToken>${env.PACTFLOW_TOKEN}</pactBrokerToken>

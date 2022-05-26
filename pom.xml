@@ -24,7 +24,7 @@
         <pact.version>4.3.5</pact.version>
         <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <pact.maven.plugin.version>4.3.5</pact.maven.plugin.version>
+        <pact.maven.plugin.version>4.3.8</pact.maven.plugin.version>
     </properties>
     <profiles>
         <profile>

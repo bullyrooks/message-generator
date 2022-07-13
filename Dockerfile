@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:experimental
 FROM openjdk:15.0.2-slim-buster as build
-WORKDIR application
 
 COPY mvnw .
 COPY pom.xml .

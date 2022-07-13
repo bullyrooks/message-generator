@@ -14,19 +14,20 @@ jobs:
   env-vars:
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.step1.outputs.branch }}
-      output2: ${{ steps.step1.outputs.version }}
+      branch: ${{ steps.step1.outputs.branch }}
+      version: ${{ steps.step1.outputs.version }}
     steps:
       - id: step1
         name: Set environment variables
         run: |
           # Short name for current branch. For PRs, use target branch (base ref)
           GIT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          echo "GIT_BRANCH=$GIT_BRANCH"
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
-          echo "::set-output name=branch::$GIT_BRANCH"
+          echo "::set-output name=branch::${{ env.GIT_BRANCH }}"
           echo "VERSION=$GITHUB_SHA"
           echo "VERSION=$GITHUB_SHA" >> $GITHUB_ENV
-          echo "::set-output name=branch::$GITHUB_SHA"
+          echo "::set-output name=version::${{ env.VERSION }}"
 
   compile:
     runs-on: ubuntu-latest
@@ -49,8 +50,8 @@ jobs:
     needs:
       - env-vars
     env:
-      VERSION: ${{needs.env-vars.outputs.version}}
-      GIT_BRANCH: ${{needs.env-vars.outputs.branch}}
+      VERSION: ${{ needs.env-vars.outputs.version }}
+      GIT_BRANCH: ${{ needs.env-vars.outputs.branch }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

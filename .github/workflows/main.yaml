@@ -92,7 +92,7 @@ jobs:
       - contract-test
     runs-on: ubuntu-latest
     env:
-      version:  needs.get-version.outputs.version }}
+      version:  ${{ needs.get-version.outputs.version }}
     steps:
       - name: Pact Can-i-deploy
         run: |

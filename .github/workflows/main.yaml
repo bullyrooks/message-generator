@@ -17,7 +17,9 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: setup semantic-release
         run: npm install -g semantic-release @semantic-release/git @semantic-release/changelog -D
       - name: release

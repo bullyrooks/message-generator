@@ -31,8 +31,8 @@ jobs:
         id: version
         run: |
           echo "VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo "VERSION=${{ env.VERSION }}"
-          echo "::set-output name=version::${{ env.VERSION }}"
+          echo "VERSION=${env.VERSION}"
+          echo "::set-output name=version::${env.VERSION}"
 
   compile:
     runs-on: ubuntu-latest

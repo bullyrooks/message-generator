@@ -70,6 +70,7 @@ jobs:
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
   build-image:
+    needs: env-vars
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

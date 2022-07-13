@@ -104,7 +104,11 @@ jobs:
           --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}
   build-image:
+    needs:
+      - get-version
     runs-on: ubuntu-latest
+    env:
+      version: ${{needs.get-version.outputs.version}}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -144,7 +148,7 @@ jobs:
         with:
           push: true
           tags: |
-            cloud.canister.io:5000/bullyrooks/message-generator:${{ env.VERSION }}
+            cloud.canister.io:5000/bullyrooks/message-generator:${{ env.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
         # This ugly bit is necessary if you don't want your cache to grow forever

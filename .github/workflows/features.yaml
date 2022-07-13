@@ -11,12 +11,9 @@ env:
   PACTBROKER_HOST: bullyrooks.pactflow.io
 
 jobs:
-  compile:
+  env-vars:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set environment variables
         run: |
           # Short name for current branch. For PRs, use target branch (base ref)
@@ -24,6 +21,13 @@ jobs:
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
           echo "VERSION=$GITHUB_SHA"
           echo "VERSION=$GITHUB_SHA" >> $GITHUB_ENV
+
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -34,10 +38,20 @@ jobs:
 
       - name: Maven Tests
         run: ./mvnw -B test
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: workspace
+          path: .
   contract-test:
-    needs: compile
+    needs:
+      - compile
+      - env-vars
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: workspace
       - name: Create Pact Version Tag
         run: |
           ./mvnw pact:create-version-tag \
@@ -56,9 +70,12 @@ jobs:
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
   build-image:
-    needs: compile
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 

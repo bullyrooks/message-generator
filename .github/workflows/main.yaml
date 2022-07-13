@@ -30,9 +30,9 @@ jobs:
       - name: get current version tag
         id: version
         run: |
-          echo "VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo ${{ env.VERSION }}
-          echo "::set-output name=version::${{ env.VERSION }}"
+          echo "version=${{ steps.get-latest-tag.outputs.tag }}" >> $env:GITHUB_ENV
+          echo ${{ env.version }}
+          echo "::set-output name=version::${{ env.version }}"
 
   compile:
     runs-on: ubuntu-latest

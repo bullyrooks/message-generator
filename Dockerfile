@@ -6,7 +6,6 @@ COPY mvnw .
 COPY pom.xml .
 
 # download dependencies
-RUN dos2unix mvnw
 RUN ./mvnw dependency:go-offline
 
 COPY src src

@@ -13,22 +13,11 @@ env:
 jobs:
   get-version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
-      - name: find current version
-        uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
-
-      - name: get current version tag
-        run: |
-          echo "VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo ${{ env.VERSION }}
-
-      - name: Echo current version tag
-        run: |
-          echo $VERSION
-          echo ${{ env.VERSION }}
-
       - name: Bump version
+        id: version
         run: |
           git config --global user.email "github+actions@gmail.com"
           git config --global user.name "Actions"
@@ -36,6 +25,7 @@ jobs:
           wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
           echo "VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)" >> $GITHUB_ENV
           echo ${{ env.VERSION }}
+          echo "::set-output name=version::${{ env.VERSION }}"
 
   compile:
     runs-on: ubuntu-latest
@@ -54,14 +44,29 @@ jobs:
       - name: Maven Tests
         run: ./mvnw -B test
   contract-test:
-    needs: compile, get-version
+    needs:
+      - compile
+      - get-version
     runs-on: ubuntu-latest
+    env:
+      version: ${{needs.get-version.outputs.version}}
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+
       - name: Create Pact Version Tag
         run: |
           ./mvnw pact:create-version-tag \
           -Dpacticipant=message-generator \
-          -DpacticipantVersion=${{ env.VERSION }} \
+          -DpacticipantVersion=${{ env.version }} \
           -Dtag=initial
 
       - name: Verify Contract Tests
@@ -69,22 +74,27 @@ jobs:
           ./mvnw -B verify -Pcontract \
           -Dpactbroker.host=${{env.PACTBROKER_HOST}} \
           -Dpact.verifier.publishResults=true \
-          -Dpact.provider.version=${{env.VERSION}} \
+          -Dpact.provider.version=${{env.version}} \
           -Dpact.provider.branch=main \
           -Dpact.provider.tag=okteto \
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
   can-i-deploy:
-    needs: contract-test
+    needs:
+      - get-version
+      - contract-test
     runs-on: ubuntu-latest
+    env:
+      version: ${{needs.get-version.outputs.version}}
     steps:
       - name: Pact Can-i-deploy
         run: |
+          echo "VERSION=${{ env.version }}"
           docker run --rm pactfoundation/pact-cli:latest \
           broker can-i-deploy \
           --pacticipant=message-generator  \
           --to-environment=okteto \
-          --version=${{ env.VERSION }}  \
+          --version=${{ env.version }}  \
           --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}
   build-image:
@@ -126,7 +136,6 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: .
           push: true
           tags: |
             cloud.canister.io:5000/bullyrooks/message-generator:${{ env.VERSION }}
@@ -142,8 +151,12 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
   helm-chart:
-    needs: build-image
+    needs:
+      - build-image
+      - get-version
     runs-on: ubuntu-latest
+    env:
+      version: ${{needs.get-version.outputs.version}}
     steps:
       - name: Publish Helm chart
         uses: stefanprodan/helm-gh-pages@master
@@ -153,11 +166,15 @@ jobs:
           charts_url: https://bullyrooks.github.io/helm-charts/
           repository: helm-charts
           branch: gh-charts
-          app_version: ${{ env.VERSION }}
-          chart_version: ${{ env.VERSION }}
+          app_version: ${{ env.version }}
+          chart_version: ${{ env.version }}
   deploy:
-    needs: helm-chart
+    needs:
+      - helm-chart
+      - get-version
     runs-on: ubuntu-latest
+    env:
+      version: ${{needs.get-version.outputs.version}}
     steps:
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
@@ -165,14 +182,18 @@ jobs:
           exec: |
             helm repo add bullyrooks https://bullyrooks.github.io/helm-charts/
             helm repo update
-            echo "helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}"
+            echo "helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.version }}"
             sleep 60s
             helm repo update
-            helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.VERSION }}
+            helm upgrade message-generator bullyrooks/message-generator --install --version ${{ env.version }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
   pact-release:
-    needs: deploy
+    needs:
+      - deploy
+      - get-version
     runs-on: ubuntu-latest
+    env:
+      version: ${{needs.get-version.outputs.version}}
     steps:
       - name: Create Pact Release Record
         run: |
@@ -180,7 +201,7 @@ jobs:
           broker record-release \
           --environment=okteto \
           --pacticipant=message-generator \
-          --version=${{ env.VERSION }} \
+          --version=${{ env.version }} \
           --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}
 
@@ -190,6 +211,6 @@ jobs:
           broker record-deployment \
           --environment=okteto \
           --pacticipant=message-generator \
-          --version=${{ env.VERSION }} \
+          --version=${{ env.version }} \
           --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}

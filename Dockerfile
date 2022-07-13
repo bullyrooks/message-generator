@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:experimental
 FROM openjdk:15.0.2-slim-buster as build
+WORKDIR application
 
-COPY .mvn .mvn
 COPY mvnw .
 COPY pom.xml .
+COPY .mvn .mvn
 
 # download dependencies
 RUN ./mvnw dependency:go-offline

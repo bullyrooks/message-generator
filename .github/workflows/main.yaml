@@ -170,6 +170,9 @@ jobs:
     env:
       version: ${{ needs.get-version.outputs.version }}
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Publish Helm chart
         uses: stefanprodan/helm-gh-pages@master
         with:

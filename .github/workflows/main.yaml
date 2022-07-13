@@ -16,14 +16,18 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - name: Bump version
+
+      - name: setup semantic-release
+        run: npm install -g semantic-release @semantic-release/git @semantic-release/changelog -D
+      - name: release
+        run: npx semantic-release
+      - name: find current version
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+      - name: get current version tag
         id: version
         run: |
-          git config --global user.email "github+actions@gmail.com"
-          git config --global user.name "Actions"
-          git fetch --tags
-          wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
-          echo "VERSION=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-)" >> $GITHUB_ENV
+          echo "VERSION=${{ steps.get-version.outputs.version }}" >> $GITHUB_ENV
           echo ${{ env.VERSION }}
           echo "::set-output name=version::${{ env.VERSION }}"
 

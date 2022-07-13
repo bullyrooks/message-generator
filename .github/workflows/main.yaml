@@ -15,7 +15,7 @@ jobs:
   get-version:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.version }}
+      version: ${{ steps.store-version.outputs.versionout }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -28,11 +28,11 @@ jobs:
         uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
       - name: get current version tag
-        id: version
+        id: store-version
         run: |
-          echo "version=${{ steps.get-latest-tag.outputs.tag }}" >> $env:GITHUB_ENV
-          echo ${{ env.version }}
-          echo "::set-output name=version::${{ env.version }}"
+          echo "versionenv=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
+          echo ${{ env.versionenv }}
+          echo "::set-output name=versionout::${{ env.versionenv }}"
 
   compile:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
       - get-version
     runs-on: ubuntu-latest
     env:
-      version: ${{needs.get-version.outputs.version}}
+      version: ${{ needs.get-version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -92,7 +92,7 @@ jobs:
       - contract-test
     runs-on: ubuntu-latest
     env:
-      version: ${{needs.get-version.outputs.version}}
+      version:  needs.get-version.outputs.version }}
     steps:
       - name: Pact Can-i-deploy
         run: |
@@ -109,7 +109,7 @@ jobs:
       - get-version
     runs-on: ubuntu-latest
     env:
-      version: ${{needs.get-version.outputs.version}}
+      version: ${{ needs.get-version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -168,7 +168,7 @@ jobs:
       - get-version
     runs-on: ubuntu-latest
     env:
-      version: ${{needs.get-version.outputs.version}}
+      version: ${{ needs.get-version.outputs.version }}
     steps:
       - name: Publish Helm chart
         uses: stefanprodan/helm-gh-pages@master
@@ -186,7 +186,7 @@ jobs:
       - get-version
     runs-on: ubuntu-latest
     env:
-      version: ${{needs.get-version.outputs.version}}
+      version: ${{ needs.get-version.outputs.version }}
     steps:
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
@@ -205,7 +205,7 @@ jobs:
       - get-version
     runs-on: ubuntu-latest
     env:
-      version: ${{needs.get-version.outputs.version}}
+      version: ${{ needs.get-version.outputs.version }}
     steps:
       - name: Create Pact Release Record
         run: |

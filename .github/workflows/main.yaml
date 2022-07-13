@@ -9,6 +9,7 @@ env:
   PACTFLOW_URL: https://bullyrooks.pactflow.io
   PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
   PACTBROKER_HOST: bullyrooks.pactflow.io
+  GH_TOKEN: ${{secrets.CHART_TOKEN}}
 
 jobs:
   get-version:
@@ -49,7 +50,6 @@ jobs:
         run: ./mvnw -B test
   contract-test:
     needs:
-      - compile
       - get-version
     runs-on: ubuntu-latest
     env:
@@ -157,6 +157,7 @@ jobs:
   helm-chart:
     needs:
       - build-image
+      - can-i-deploy
       - get-version
     runs-on: ubuntu-latest
     env:

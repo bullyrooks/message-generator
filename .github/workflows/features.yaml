@@ -55,7 +55,7 @@ jobs:
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
   call-build-image:
-    uses: bullyrooks/service-workflow/github/workflows/build-image.yaml@main
+    uses: bullyrooks/service-workflow/.github/workflows/build-image.yaml@main
     with:
       push: false
 

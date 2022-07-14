@@ -14,38 +14,14 @@ jobs:
   env-vars:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.step1.outputs.version }}
+      version: ${{ steps.step1.outputs.versionout }}
     steps:
       - id: step1
         name: Set environment variables
         run: |
           echo "VERSION=$GITHUB_SHA"
           echo "VERSION=$GITHUB_SHA" >> $GITHUB_ENV
-          echo "::set-output name=version::${{ env.VERSION }}"
-
-  get-version:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.store-version.outputs.versionout }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set environment variables
-        run: |
-          # Short name for current branch. For PRs, use target branch (base ref)
-          GIT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          echo "GIT_BRANCH=$GIT_BRANCH"
-          echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
-          echo "VERSION=$GITHUB_SHA"
-          echo "VERSION=$GITHUB_SHA" >> $GITHUB_ENV
-
-      - name: get current version tag
-        id: store-version
-        run: |
-          echo "versionenv=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
-          echo ${{ steps.get-latest-tag.outputs.tag }}
-          echo "::set-output name=versionout::${{ steps.get-latest-tag.outputs.tag }}"
+          echo "::set-output name=versionout::${{ env.VERSION }}"
 
   call-compile:
     uses: bullyrooks/service-workflow/.github/workflows/compile.yaml@main
@@ -96,7 +72,7 @@ jobs:
     uses: bullyrooks/service-workflow/.github/workflows/build-image.yaml@main
     with:
       push: false
-      version: ${{needs.env-vars.outputs.version}}
+      version: ${{ needs.env-vars.outputs.version }}
 
   can-i-deploy:
     needs:

@@ -13,7 +13,7 @@ env:
 jobs:
 
   call-compile:
-    uses: bullyrooks/service-workflow/.github/workflows/compile.yml@main
+    uses: bullyrooks/service-workflow/.github/workflows/compile.yaml@main
 
   contract-test:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           -DPACT_CONSUMER_SELECTOR_TAG=okteto,pre-okteto
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
   call-build-image:
-    uses: bullyrooks/service-workflow/.github/workflows/build-image.yml@main
+    uses: bullyrooks/service-workflow/.github/workflows/build-image.yaml@main
     with:
       push: false
 

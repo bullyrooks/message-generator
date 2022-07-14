@@ -72,12 +72,12 @@ jobs:
           --version=${{ env.version }}  \
           --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}
+
   call-build-image:
     needs:
       - call-get-version
     uses: bullyrooks/service-workflow/.github/workflows/build-image.yaml@main
     with:
-      push: true
       version: ${{ needs.call-get-version.outputs.version }}
 
   call-helm-chart:
@@ -90,7 +90,7 @@ jobs:
       access-token: ${{ secrets.CHART_TOKEN }}
       version: ${{ needs.call-get-version.outputs.version }}
 
-  deploy:
+  call-deploy:
     needs:
       - helm-chart
       - get-version

@@ -70,9 +70,6 @@ jobs:
     needs:
       - env-vars
     uses: bullyrooks/service-workflow/.github/workflows/build-image.yaml@main
-    with:
-      push: false
-      version: ${{ needs.env-vars.outputs.version }}
 
   can-i-deploy:
     needs:

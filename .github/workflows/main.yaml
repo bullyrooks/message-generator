@@ -20,7 +20,7 @@ jobs:
 
   contract-test:
     needs:
-      - get-version
+      - call-get-version
     runs-on: ubuntu-latest
     env:
       version: ${{ needs.call-get-version.outputs.version }}
@@ -56,7 +56,7 @@ jobs:
         continue-on-error: true #verify may fail, but we're relying on can-i-deploy to control deploy
   can-i-deploy:
     needs:
-      - get-version
+      - call-get-version
       - contract-test
     runs-on: ubuntu-latest
     env:
@@ -82,9 +82,9 @@ jobs:
 
   call-helm-chart:
     needs:
-      - build-image
+      - call-build-image
       - can-i-deploy
-      - get-version
+      - call-get-version
     uses: bullyrooks/service-workflow/.github/workflows/helm-chart.yaml@main
     secrets:
       access-token: ${{ secrets.CHART_TOKEN }}
@@ -93,8 +93,8 @@ jobs:
 
   call-deploy:
     needs:
-      - helm-chart
-      - get-version
+      - call-helm-chart
+      - call-get-version
     uses: bullyrooks/service-workflow/.github/workflows/okteto-deploy.yaml@main
     with:
       version: ${{ needs.call-get-version.outputs.version }}
@@ -103,8 +103,8 @@ jobs:
 
   pact-release:
     needs:
-      - deploy
-      - get-version
+      - call-deploy
+      - call-get-version
     runs-on: ubuntu-latest
     env:
       version: ${{ needs.get-version.outputs.version }}

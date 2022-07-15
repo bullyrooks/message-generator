@@ -13,7 +13,7 @@ env:
 
 jobs:
   call-get-version:
-    uses: bullyrooks/service-workflow/.github/workflows/get-version.yml@main
+    uses: bullyrooks/service-workflow/.github/workflows/get-version.yaml@main
 
   call-compile:
     uses: bullyrooks/service-workflow/.github/workflows/compile.yaml@main

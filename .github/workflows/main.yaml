@@ -14,6 +14,8 @@ env:
 jobs:
   call-get-version:
     uses: bullyrooks/service-workflow/.github/workflows/get-version.yaml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.CHART_TOKEN }}
 
   call-compile:
     uses: bullyrooks/service-workflow/.github/workflows/compile.yaml@main

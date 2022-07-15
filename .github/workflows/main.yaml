@@ -87,7 +87,7 @@ jobs:
       - get-version
     uses: bullyrooks/service-workflow/.github/workflows/helm-chart.yaml@main
     with:
-      access-token: ${{ env.GH_TOKEN }}
+      access-token: ${{ secrets.CHART_TOKEN }}
       version: ${{ needs.call-get-version.outputs.version }}
 
   call-deploy:
@@ -97,7 +97,7 @@ jobs:
     uses: bullyrooks/service-workflow/.github/workflows/okteto-deploy.yaml@main
     with:
       version: ${{ needs.call-get-version.outputs.version }}
-      kube-config: ${{ env.KUBECONFIG }}
+      kube-config: ${{ secrets.KUBECONFIG }}
 
   pact-release:
     needs:

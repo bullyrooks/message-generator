@@ -75,7 +75,7 @@ jobs:
           --broker-base-url=${{ env.PACTFLOW_URL }} \
           --broker-token=${{ env.PACTFLOW_TOKEN }}
 
-  call-build-image:
+  call-build-image-with-push:
     needs:
       - call-get-version
     uses: bullyrooks/service-workflow/.github/workflows/build-image-with-push.yaml@main

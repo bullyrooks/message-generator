@@ -69,7 +69,7 @@ jobs:
   call-build-image:
     needs:
       - env-vars
-    uses: bullyrooks/service-workflow/.github/workflows/build-image.yaml@main
+    uses: bullyrooks/service-workflow/.github/workflows/build-image-no-push.yaml@main
 
   can-i-deploy:
     needs:

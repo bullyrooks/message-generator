@@ -5,11 +5,15 @@ on:
   push:
     branches:
       - main
+
+concurrency:
+  group: ci-tests-${{ github.ref }}-1
+  cancel-in-progress: true
+
 env:
   PACTFLOW_URL: https://bullyrooks.pactflow.io
   PACTFLOW_TOKEN: ${{secrets.PACTFLOW_TOKEN}}
   PACTBROKER_HOST: bullyrooks.pactflow.io
-  GH_TOKEN: ${{secrets.CHART_TOKEN}}
 
 jobs:
   call-get-version:

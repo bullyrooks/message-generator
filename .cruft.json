@@ -1,0 +1,21 @@
+{
+  "template": "https://github.com/bullyrooks/spring-microservice-template",
+  "commit": "d4f411cced573b38bf25c82746125377433523c5",
+  "context": {
+    "cookiecutter": {
+      "service_name": "Message Generator",
+      "application_name": "MessageGeneratorApplication",
+      "service_slug": "message-generator",
+      "package_name": "message_generator",
+      "service_port": "8080",
+      "service_registry": "bullyrooks/message-generator",
+      "service_namespace": "bullyrooks",
+      "githuborg": "bullyrooks",
+      "_copy_without_render": [
+        "helm/{{ cookiecutter.service_slug }}/templates/*"
+      ],
+      "_template": "https://github.com/bullyrooks/spring-microservice-template"
+    }
+  },
+  "directory": null
+}
